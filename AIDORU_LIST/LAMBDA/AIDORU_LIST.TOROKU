@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# tukubaiコマンドへのPATH
+export PATH=$PATH:$LAMBDA_TASK_ROOT/bin/
+# aws cliへのPATH
+export PATH=$PATH:/opt/awscli
+app_name="AIDORU_LIST"
+basename="$(basename $0)"
+tmp="/tmp/${basename}-$$"
+app_dir="$LAMBDA_TASK_ROOT/${app_name}"
+POMPA_FILE="${pompa_dir}/${app_name}"
+
+namedata="${1}"
+[ -n ${namedata} ] || exit 1
+
+NAME=$(nameread name ${namedata})
+TYPE=$(nameread type ${namedata})
+CV=$(nameread cv ${namedata})
+
+echo "${NAME} ${TYPE} ${CV} _ $(date +%Y%m%d%H%M%S)" > ${tmp}-input
+# 1:名前 2:属性 3:担当声優 4:予備 5:更新時間
+
+# 新しいPOMPAを作成
+aws s3 cp s3://sls-bash/${app_name}/POMPA/${app_name} - |
+LANG=C sort -k1                                         |
+up3 key=1 - ${tmp}-input                                |
+getlast 1 1                                             > ${tmp}-pompa
+
+# S3を更新
+aws s3 cp ${tmp}-pompa s3://sls-bash/${app_name}/POMPA/${app_name}
+aws s3 cp ${tmp}-input s3://sls-bash/${app_name}/IMPUT/${app_name}.$(date +%Y%m%d%H%M%S)
+
+# 成功時の返却
+cat <<FIN |tr -s ' '|tr -d '\n' > ${tmp}-res
+{
+  "name": "${NAME}",
+  "type": "${TYPE}",
+  "cv": "${CV}"
+}
+FIN
+
+cat ${tmp}-res

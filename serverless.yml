@@ -1,0 +1,42 @@
+service: lambda-unicage-sls
+
+custom:
+  defaultStage: dev
+  api_version: v0
+  main_cgi: AIDORU_LIST/LAMBDA/AIDORU_LIST.CGI
+  url_path: AIDORU_LIST.CGI
+  layers: arn:aws:lambda:ap-northeast-1:${opt:account-id}:layer:serverlessrepo-lambda-layer-awscli:1
+
+provider:
+  name: aws
+  runtime: provided
+  region: ap-northeast-1
+  iamManagedPolicies:
+    - 'arn:aws:iam::${opt:account-id}:policy/sls-bash'
+  stage: ${opt:stage, self:custom.defaultStage}
+
+functions:
+  init:
+    handler: ${self:custom.main_cgi}
+    events:
+      - http:
+          path: ${self:custom.url_path}
+          method: get
+          integration: lambda
+    environment:
+      MODE: init
+    layers:
+      - ${self:custom.layers}
+
+  toroku:
+    handler: ${self:custom.main_cgi}
+    events:
+      - http:
+          path: ${self:custom.url_path}
+          method: post
+          integration: lambda
+    environment:
+      MODE: toroku
+    layers:
+      - ${self:custom.layers}
+
