@@ -12,11 +12,11 @@ app_dir="$LAMBDA_TASK_ROOT/${app_name}"
 
 case "${MODE}" in
   init )
-    ${app_dir}/LAMBDA/${app_name}.DISPLAY
+    ${app_dir}/CGI/${app_name}.DISPLAY
     ;;
   toroku )
     # 入ってきたeventをユニケージ用にパース
-    ${app_dir}/LAMBDA/event2name.py ${1} > ${tmp}-event
-    ${app_dir}/LAMBDA/${app_name}.TOROKU ${tmp}-event
+    ${app_dir}/CGI/event2name.py ${1} > ${tmp}-event
+    ${app_dir}/CGI/${app_name}.TOROKU ${tmp}-event
     ;;
 esac
