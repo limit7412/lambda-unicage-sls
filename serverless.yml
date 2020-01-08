@@ -3,8 +3,8 @@ service: lambda-unicage-sls
 custom:
   defaultStage: dev
   api_version: v0
-  main_cgi: AIDORU_LIST/LAMBDA/AIDORU_LIST.CGI
-  url_path: AIDORU_LIST.CGI
+  main_cgi: AIDORU_LIST/CGI/AIDORU_LIST.CGI
+  url_path: AIDORU_LIST
   layers: arn:aws:lambda:ap-northeast-1:${opt:account-id}:layer:serverlessrepo-lambda-layer-awscli:1
 
 provider:
