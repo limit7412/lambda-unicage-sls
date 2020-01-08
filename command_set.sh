@@ -1,5 +1,5 @@
 tmp="/tmp/commandset-$$"
-tools="$(pwd)/tools/"
+tools="$(pwd)/bin/"
 
 echo -n         >  ${tmp}
 which getlast   >> ${tmp}

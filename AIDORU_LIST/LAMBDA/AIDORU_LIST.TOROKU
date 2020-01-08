@@ -27,8 +27,8 @@ up3 key=1 - ${tmp}-input                                |
 getlast 1 1                                             > ${tmp}-pompa
 
 # S3を更新
-aws s3 cp ${tmp}-pompa s3://sls-bash/${app_name}/POMPA/${app_name}
-aws s3 cp ${tmp}-input s3://sls-bash/${app_name}/IMPUT/${app_name}.$(date +%Y%m%d%H%M%S)
+aws s3 cp ${tmp}-pompa s3://sls-bash/${app_name}/POMPA/${app_name}                       > /dev/nul
+aws s3 cp ${tmp}-input s3://sls-bash/${app_name}/IMPUT/${app_name}.$(date +%Y%m%d%H%M%S) > /dev/nul
 
 # 成功時の返却
 cat <<FIN |tr -s ' '|tr -d '\n' > ${tmp}-res
